@@ -1,0 +1,78 @@
+---
+layout: layouts/base.njk
+title: Image Gallery
+---
+
+<div class="gallery">
+  {% for item in collections.galleryItems %}
+    <div class="gallery-item" data-tags="{{ item.tags | join(',') }}">
+      <button class="thumbnail-button" data-image="{{ item.image }}" data-title="{{ item.title | default('') }}" data-author="{{ item.author | default('') }}" data-date="{{ item.date | default('') }}" data-tags="{{ item.tags | join(',') }}" data-description="{{ item.description | default('') }}">
+        {% image item.image, item.title | default(''), "(max-width: 600px) 100vw, 300px" %}
+      </button>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img class="modal-image" src="" alt="">
+    <div class="modal-details">
+      <h2 class="modal-title"></h2>
+      <p class="modal-author"></p>
+      <p class="modal-date"></p>
+      <div class="modal-tags"></div>
+      <p class="modal-description"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modal');
+    const modalImg = document.querySelector('.modal-image');
+    const modalTitle = document.querySelector('.modal-title');
+    const modalAuthor = document.querySelector('.modal-author');
+    const modalDate = document.querySelector('.modal-date');
+    const modalTags = document.querySelector('.modal-tags');
+    const modalDescription = document.querySelector('.modal-description');
+    const closeBtn = document.querySelector('.close');
+    const thumbnailButtons = document.querySelectorAll('.thumbnail-button');
+
+    thumbnailButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const imageSrc = this.getAttribute('data-image');
+        const title = this.getAttribute('data-title');
+        const author = this.getAttribute('data-author');
+        const date = this.getAttribute('data-date');
+        const tags = this.getAttribute('data-tags');
+        const description = this.getAttribute('data-description');
+
+        modalImg.src = '/' + imageSrc; // Assuming images are served from root
+        modalImg.alt = title;
+        modalTitle.textContent = title;
+        modalAuthor.textContent = `投稿者: ${author}`;
+        modalDate.textContent = `日付: ${date}`;
+        modalTags.innerHTML = tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('');
+        modalDescription.textContent = description;
+
+        modal.style.display = 'block';
+      });
+    });
+
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Tag filtering
+    const tagFilters = {}; // We'll implement a simple tag filter UI later if needed
+    // For now, we just show all items. Filtering can be added via URL parameters or UI.
+  });
+</script>
