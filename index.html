@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Gallery</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  
+<div class="gallery">
+  
+    <div class="gallery-item" data-tags="サンプル,テスト">
+      <button class="thumbnail-button" data-image="src/images/sample.jpg" data-title="サンプル画像" data-author="テストユーザー" data-date="2026-09-22" data-tags="サンプル,テスト" data-description="これはギャラリーのサンプル画像です。EleventyとGitHub Actionsを使ったGitHub Pagesサイトの動作確認用です。">
+        <picture><source type="image/webp" srcset="/img/sample-300.webp" sizes="(max-width: 600px) 100vw, 300px"><img src="/img/sample-300.jpeg" alt="サンプル画像" loading="lazy" decoding="async" width="300" height="225"></picture>
+      </button>
+    </div>
+  
+</div>
+
+<!-- Modal -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img class="modal-image" src="" alt="">
+    <div class="modal-details">
+      <h2 class="modal-title"></h2>
+      <p class="modal-author"></p>
+      <p class="modal-date"></p>
+      <div class="modal-tags"></div>
+      <p class="modal-description"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('modal');
+    const modalImg = document.querySelector('.modal-image');
+    const modalTitle = document.querySelector('.modal-title');
+    const modalAuthor = document.querySelector('.modal-author');
+    const modalDate = document.querySelector('.modal-date');
+    const modalTags = document.querySelector('.modal-tags');
+    const modalDescription = document.querySelector('.modal-description');
+    const closeBtn = document.querySelector('.close');
+    const thumbnailButtons = document.querySelectorAll('.thumbnail-button');
+
+    thumbnailButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const imageSrc = this.getAttribute('data-image');
+        const title = this.getAttribute('data-title');
+        const author = this.getAttribute('data-author');
+        const date = this.getAttribute('data-date');
+        const tags = this.getAttribute('data-tags');
+        const description = this.getAttribute('data-description');
+
+        modalImg.src = '/' + imageSrc; // Assuming images are served from root
+        modalImg.alt = title;
+        modalTitle.textContent = title;
+        modalAuthor.textContent = `投稿者: ${author}`;
+        modalDate.textContent = `日付: ${date}`;
+        modalTags.innerHTML = tags.split(',').map(tag => `<span class="tag">${tag.trim()}</span>`).join('');
+        modalDescription.textContent = description;
+
+        modal.style.display = 'block';
+      });
+    });
+
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    });
+
+    // Tag filtering
+    const tagFilters = {}; // We'll implement a simple tag filter UI later if needed
+    // For now, we just show all items. Filtering can be added via URL parameters or UI.
+  });
+</script>
+</body>
+</html>
